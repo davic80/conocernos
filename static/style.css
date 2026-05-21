@@ -256,12 +256,16 @@ input {
   margin-top: 1.5rem;
 }
 
-.age-warning {
-  font-size: 0.75rem;
+.footer-donate {
+  display: inline-block;
+  font-size: 0.8rem;
   color: var(--text-muted);
+  text-decoration: none;
   margin-top: 1rem;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.02em;
+  transition: color 0.15s;
 }
+.footer-donate:hover { color: var(--accent); }
 
 /* ============== BOTONES ============== */
 .btn-primary, .btn-secondary {
