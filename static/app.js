@@ -11,6 +11,7 @@
   const ALL_CATEGORIES = ['revelaciones','complicidad','futuro','intimidad','retos'];
   const ALL_LEVELS = ['suave','picante','sin-filtros'];
   const ALL_AUDIENCES = ['inicio','establecida'];
+  const ALL_AGES = ['16-25','26-40','40+'];
 
   const CATEGORY_LABELS = {
     'revelaciones': 'Revelaciones íntimas',
@@ -45,16 +46,19 @@
     try {
       const raw = JSON.parse(localStorage.getItem(LS_FILTERS) || 'null');
       if (!raw) throw 0;
+      const validAge = raw.age && (raw.age === 'any' || ALL_AGES.includes(raw.age)) ? raw.age : 'any';
       return {
         categories: new Set(raw.categories?.length ? raw.categories : ALL_CATEGORIES),
         levels: new Set(raw.levels?.length ? raw.levels : ALL_LEVELS),
         audiences: new Set(raw.audiences?.length ? raw.audiences : ALL_AUDIENCES),
+        age: validAge,
       };
     } catch {
       return {
         categories: new Set(ALL_CATEGORIES),
         levels: new Set(ALL_LEVELS),
         audiences: new Set(ALL_AUDIENCES),
+        age: 'any',
       };
     }
   }
@@ -63,6 +67,7 @@
       categories: [...state.filters.categories],
       levels: [...state.filters.levels],
       audiences: [...state.filters.audiences],
+      age: state.filters.age,
     }));
   }
 
@@ -121,11 +126,17 @@
   }
 
   // -------- lógica juego --------
+  function questionMatchesAge(q) {
+    if (state.filters.age === 'any') return true;
+    const ages = (q.ages || 'all').split(',').map(s => s.trim());
+    return ages.includes('all') || ages.includes(state.filters.age);
+  }
   function computePool() {
     state.pool = state.questions.filter(q =>
       state.filters.categories.has(q.category) &&
       state.filters.levels.has(q.level) &&
-      state.filters.audiences.has(q.audience)
+      state.filters.audiences.has(q.audience) &&
+      questionMatchesAge(q)
     );
   }
   function pickRandom() {
@@ -257,6 +268,9 @@
 
   // -------- UI filtros --------
   function syncFilterChips() {
+    document.querySelectorAll('#filter-age .chip').forEach(b => {
+      b.setAttribute('aria-pressed', state.filters.age === b.dataset.age);
+    });
     document.querySelectorAll('#filter-audience .chip').forEach(b => {
       b.setAttribute('aria-pressed', state.filters.audiences.has(b.dataset.aud));
     });
@@ -279,6 +293,13 @@
     $('btn-start').disabled = n === 0;
   }
   function bindFilterChips() {
+    document.querySelectorAll('#filter-age .chip').forEach(b => {
+      b.addEventListener('click', () => {
+        state.filters.age = b.dataset.age;
+        saveFilters();
+        syncFilterChips();
+      });
+    });
     document.querySelectorAll('#filter-audience .chip').forEach(b => {
       b.addEventListener('click', () => {
         const a = b.dataset.aud;

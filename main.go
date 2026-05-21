@@ -24,6 +24,7 @@ type Question struct {
 	Level    string `json:"level"`
 	Text     string `json:"text"`
 	Audience string `json:"audience"`
+	Ages     string `json:"ages"`
 }
 
 var db *sql.DB
@@ -63,7 +64,7 @@ func main() {
 }
 
 func handleQuestions(w http.ResponseWriter, r *http.Request) {
-	rows, err := db.Query("SELECT id, category, level, text, audience FROM questions ORDER BY id")
+	rows, err := db.Query("SELECT id, category, level, text, audience, ages FROM questions ORDER BY id")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -73,7 +74,7 @@ func handleQuestions(w http.ResponseWriter, r *http.Request) {
 	questions := make([]Question, 0, 260)
 	for rows.Next() {
 		var q Question
-		if err := rows.Scan(&q.ID, &q.Category, &q.Level, &q.Text, &q.Audience); err != nil {
+		if err := rows.Scan(&q.ID, &q.Category, &q.Level, &q.Text, &q.Audience, &q.Ages); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}

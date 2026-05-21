@@ -3,7 +3,8 @@ CREATE TABLE IF NOT EXISTS questions (
     category TEXT NOT NULL,
     level TEXT NOT NULL,
     text TEXT NOT NULL,
-    audience TEXT NOT NULL DEFAULT 'establecida'
+    audience TEXT NOT NULL DEFAULT 'establecida',
+    ages TEXT NOT NULL DEFAULT 'all'
 );
 
 CREATE INDEX IF NOT EXISTS idx_cat_lvl ON questions(category, level);
@@ -380,3 +381,36 @@ INSERT INTO questions (category, level, text, audience) VALUES
 INSERT INTO questions (category, level, text, audience) VALUES
 ('retos', 'sin-filtros', 'Quítame una prenda y guárdala como recuerdo de esta noche.', 'inicio'),
 ('retos', 'sin-filtros', 'Cuéntame con detalle qué te imaginas haciendo conmigo después de jugar.', 'inicio');
+
+-- ============================================================
+-- ETIQUETAS POR FRANJA DE EDAD
+-- Por defecto todas las cartas son 'all'. Solo etiquetamos las
+-- que tienen sesgo evidente: hijos, legado, GIFs, etc.
+-- Franjas: '16-25', '26-40', '40+'
+-- ============================================================
+
+-- Cartas que asumen pareja con cierta historia o proyección larga
+-- (50 años juntos, abuelos, dentro de 30 años, herencia) → no encajan para 16-25
+UPDATE questions SET ages='26-40,40+' WHERE text IN (
+    '¿Cómo celebraríamos nuestros 50 años juntos?',
+    '¿Qué quieres que sigamos haciendo aunque seamos abuelos?',
+    '¿Qué te gustaría que dijéramos al mirar atrás dentro de 30 años?',
+    '¿Qué heredarías de mí si nos casáramos y luego me pasara algo?',
+    '¿Cómo sería un fin de semana perfecto para nosotros dentro de 10 años?',
+    '¿Dónde nos imaginas viviendo en 5 años?'
+);
+
+-- Decisiones de hijos: más relevantes en edad reproductiva
+UPDATE questions SET ages='16-25,26-40' WHERE text IN (
+    '¿Quieres tener hij@s conmigo? Sé sincer@.',
+    '¿Te ves casad@ o con hij@s? ¿En qué punto te imaginas eso conmigo?'
+);
+
+-- Referencias culturales más juveniles (GIFs, "fail" en primera cita,
+-- "a qué edad imaginabas tener pareja seria") → no encajan tanto en 40+
+UPDATE questions SET ages='16-25,26-40' WHERE text IN (
+    'Búscame tres GIFs que me describan.',
+    '¿A qué edad te imaginabas teniendo una pareja seria?',
+    'Cuéntame tu mayor "fail" en una primera cita.',
+    'Cántame el estribillo de la última canción que escuchaste.'
+);
