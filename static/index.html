@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="noche">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0f0a0c">
+  <meta name="description" content="Conocernos — juego de cartas para parejas. 180 preguntas para descubriros.">
+  <title>conocernos</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+  <!-- ============== BIENVENIDA ============== -->
+  <section id="screen-welcome" class="screen active">
+    <header class="brand">
+      <div class="logo">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M16 27s-10-6.2-10-13.4C6 9.3 9 6.5 12.5 6.5c2 0 3.5 1 3.5 1s1.5-1 3.5-1C23 6.5 26 9.3 26 13.6 26 20.8 16 27 16 27z" fill="currentColor"/>
+        </svg>
+      </div>
+      <h1>conocernos</h1>
+      <p class="tagline">180 cartas para (re)descubriros</p>
+    </header>
+
+    <form id="form-start" class="players">
+      <label>
+        <span>Jugador/a 1</span>
+        <input type="text" id="player1" maxlength="20" placeholder="Tu nombre" required autocomplete="off">
+      </label>
+      <label>
+        <span>Jugador/a 2</span>
+        <input type="text" id="player2" maxlength="20" placeholder="Su nombre" required autocomplete="off">
+      </label>
+
+      <details class="options">
+        <summary>
+          <span>Personalizar mazo</span>
+          <span id="pool-preview" class="pool-preview">180 cartas</span>
+        </summary>
+        <div class="options-body">
+          <p class="opt-label">Etapa</p>
+          <div class="chips" id="filter-audience">
+            <button type="button" class="chip" data-aud="inicio">Empezando</button>
+            <button type="button" class="chip" data-aud="establecida">Establecida</button>
+          </div>
+          <p class="opt-label">Categorías</p>
+          <div class="chips" id="filter-categories">
+            <button type="button" class="chip" data-cat="revelaciones">Revelaciones</button>
+            <button type="button" class="chip" data-cat="complicidad">Complicidad</button>
+            <button type="button" class="chip" data-cat="futuro">Futuro</button>
+            <button type="button" class="chip" data-cat="intimidad">Intimidad</button>
+            <button type="button" class="chip" data-cat="retos">Retos</button>
+          </div>
+          <p class="opt-label">Niveles</p>
+          <div class="chips" id="filter-levels">
+            <button type="button" class="chip" data-lvl="suave">Suave</button>
+            <button type="button" class="chip" data-lvl="picante">Picante</button>
+            <button type="button" class="chip" data-lvl="sin-filtros">Sin filtros</button>
+          </div>
+        </div>
+      </details>
+
+      <button type="submit" id="btn-start" class="btn-primary">Empezar a jugar</button>
+      <button type="button" id="btn-party" class="btn-secondary party-btn">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M3 21l3-9 12-6 3 3-6 12-9 3zm6-12l6 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Modo fiesta · solo retos
+      </button>
+    </form>
+
+    <footer class="welcome-footer">
+      <button id="btn-theme-toggle-welcome" class="btn-ghost" type="button" aria-label="Cambiar tema">
+        <span class="theme-icon"></span>
+        <span class="theme-label">Tema</span>
+      </button>
+      <button id="btn-favorites-welcome" class="btn-ghost" type="button">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z" fill="currentColor"/></svg>
+        Favoritas
+      </button>
+    </footer>
+    <p class="age-warning">+16 · contenido para adultos</p>
+  </section>
+
+  <!-- ============== JUEGO ============== -->
+  <section id="screen-game" class="screen">
+    <header class="game-header">
+      <div class="counter">
+        <span id="card-counter">0</span><span class="counter-total">/<span id="card-total">180</span></span>
+      </div>
+      <div class="header-actions">
+        <button id="btn-theme-toggle" class="icon-btn" type="button" aria-label="Cambiar tema">
+          <span class="theme-icon"></span>
+        </button>
+        <button id="btn-menu" class="icon-btn" type="button" aria-label="Menú">
+          <svg viewBox="0 0 24 24" width="22" height="22"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="card-stage">
+      <article id="card" class="card" data-category="">
+        <div class="card-meta">
+          <span id="card-category" class="badge badge-category"></span>
+          <span id="card-level" class="badge badge-level"></span>
+        </div>
+        <div id="card-turn" class="turn"></div>
+        <p id="card-text" class="card-text"></p>
+        <button id="btn-fav" class="fav-btn" type="button" aria-label="Marcar favorita" aria-pressed="false">
+          <svg viewBox="0 0 24 24" width="26" height="26"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z" fill="currentColor"/></svg>
+        </button>
+      </article>
+    </div>
+
+    <footer class="game-actions">
+      <button id="btn-skip" class="btn-secondary" type="button">
+        <svg viewBox="0 0 24 24" width="18" height="18"><path d="M5 5l9 7-9 7V5zm12 0h2v14h-2V5z" fill="currentColor"/></svg>
+        Saltar <span class="skip-counter">(<span id="skips-left">3</span>)</span>
+      </button>
+      <button id="btn-next" class="btn-primary" type="button">
+        Siguiente
+        <svg viewBox="0 0 24 24" width="18" height="18"><path d="M5 12h12M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+      </button>
+    </footer>
+  </section>
+
+  <!-- ============== FAVORITAS ============== -->
+  <section id="screen-favorites" class="screen">
+    <header class="game-header">
+      <button id="btn-back-fav" class="icon-btn" type="button" aria-label="Volver">
+        <svg viewBox="0 0 24 24" width="22" height="22"><path d="M19 12H7M13 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+      </button>
+      <h2 class="screen-title">Favoritas</h2>
+      <div style="width:40px"></div>
+    </header>
+    <div id="favorites-list" class="favorites-list"></div>
+    <p id="favorites-empty" class="empty hidden">Todavía no tenéis cartas favoritas. Cuando marquéis alguna durante la partida aparecerá aquí.</p>
+  </section>
+
+  <!-- ============== FINAL ============== -->
+  <section id="screen-end" class="screen">
+    <div class="end-content">
+      <div class="logo big">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M16 27s-10-6.2-10-13.4C6 9.3 9 6.5 12.5 6.5c2 0 3.5 1 3.5 1s1.5-1 3.5-1C23 6.5 26 9.3 26 13.6 26 20.8 16 27 16 27z" fill="currentColor"/>
+        </svg>
+      </div>
+      <h2>Fin de la partida</h2>
+      <p class="end-stats">Habéis jugado <strong id="stat-played">0</strong> cartas y guardado <strong id="stat-favs">0</strong> favoritas.</p>
+      <p class="end-quote">«Conocerse de verdad es el viaje más largo que se hace en pareja.»</p>
+      <div class="end-actions">
+        <button id="btn-replay" class="btn-primary" type="button">Nueva partida</button>
+        <button id="btn-show-favs" class="btn-secondary" type="button">Ver favoritas</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== MENÚ MODAL ============== -->
+  <div id="modal-menu" class="modal hidden" aria-hidden="true">
+    <div class="modal-backdrop" data-close="menu"></div>
+    <div class="modal-panel" role="dialog" aria-modal="true">
+      <h3>Menú</h3>
+      <button class="menu-item" data-action="resume">Continuar</button>
+      <button class="menu-item" data-action="favorites">Ver favoritas</button>
+      <button class="menu-item" data-action="restart">Empezar de nuevo</button>
+      <button class="menu-item danger" data-action="quit">Salir al inicio</button>
+    </div>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

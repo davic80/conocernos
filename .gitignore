@@ -1,0 +1,16 @@
+.env
+*.local
+
+# Go
+*.exe
+*.test
+*.out
+/conocernos
+/dist/
+
+# macOS
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
